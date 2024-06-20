@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{857d29bd-74d7-44ca-bddd-1917c2fe59f2}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_blocklink.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_data.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_data_shared.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_ecs.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_file.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_includes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_list.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_listdoublelink.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_listlink.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_math.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_mem.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_prims.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_ptr.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_queue.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_rnd.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_space.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_spaceab.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_spaceab2.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_spaces.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_sqlite.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_string.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_task.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_time.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_tinylist.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_typetraits.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_xy.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xx_zstd.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="$(MSBuildThisFileDirectory)xx.natvis" />
+  </ItemGroup>
+</Project>
