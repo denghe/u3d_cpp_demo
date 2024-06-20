@@ -1,115 +1,109 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-/*
- * reference:
-https://github.com/forrestthewoods/fts_unity_native_plugin_reloader
-*/
-
-//using UnityEngine;
-// #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-// #endif
-//public static delegate* unmanaged[Stdcall]<int> Init = (delegate* unmanaged[Stdcall]<int>)GetProcAddress(hDll, "Init");
-
 public static class Dll
 {
+    public delegate void __void_();
+    public delegate int __int_();
+    public delegate int __int_ptr_int(IntPtr buf, int len);
+    public delegate int __int_float(float v);
+    // ...
 
-    public static System.IntPtr dllHandle;
+    public static __int_ New;
 
-    /*************************************************************************/
-    // core funcs
+    public static __int_ptr_int InitBuf;
+    public static __int_float InitFrameDelay;
 
-    [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
-    public static extern System.IntPtr LoadLibrary(string lpLibFileName);
+    public static __int_ Begin;
+    public static __int_float Update;
+    public static __int_ Draw;
+    public static __int_ End;
 
-    [DllImport("kernel32", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool FreeLibrary(System.IntPtr hModule);
-
-    [DllImport("kernel32")]
-    public static extern System.IntPtr GetProcAddress(System.IntPtr hModule, string lpProcName);
-
-    [DllImport("kernel32.dll")]
-    static private extern uint GetLastError();
-
-    /*************************************************************************/
-
-    public static void LoadDll()
-    {
-        Debug.Assert(dllHandle == System.IntPtr.Zero);
-
-        dllHandle = LoadLibrary(
-#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-        Application.dataPath + "/Plugins/"
-#else
-#if DEBUG
-        "../../../../x64/Debug/"
-#else
-        "../../../../x64/Release/"
-#endif
-#endif
-         + "dll.dll");
-
-        var t = typeof(Dll);
-        var fields = t.GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
-
-        foreach (var field in fields)
-        {
-            if (field.Name == "dllHandle") continue;
-
-            var fnPtr = GetProcAddress(dllHandle, field.Name);
-            if (fnPtr != System.IntPtr.Zero)
-            {
-                field.SetValue(null, Marshal.GetDelegateForFunctionPointer(fnPtr, field.FieldType));
-            }
-        }
-    }
-
-    public static void UnloadDll()
-    {
-        Debug.Assert(dllHandle != System.IntPtr.Zero);
-        FreeLibrary(dllHandle);
-        dllHandle = System.IntPtr.Zero;
-        // ...
-    }
-
-    /*************************************************************************/
-    // more dll funcs here ( auto map )
-
-    public static Init_ Init;
-    public delegate int Init_();
-
+    public static __int_ Delete;
     // ...
 }
 
-/************************************************************************************************************************/
-/************************************************************************************************************************/
 
-/*
- * put these code into ENTRY class
-
-void Awake()
+[StructLayout(LayoutKind.Sequential)]
+public struct XY
 {
-    Dll.LoadDll();
+    public float x, y;
+    public override string ToString()
+    {
+        return "x = " + x + ", y = " + y;
+    }
 }
 
-void OnDestroy() {
-    Dll.UnloadDll();
+public class Scene : IDisposable
+{
+    public const float fps = 60;
+    public const float frameDelay = 1.0f / fps;
+    public int cap;
+    public XY[] buf;
+    public GCHandle bufHandle;
+    public IntPtr bufIntPtr;
+
+    public Scene()
+    {
+        cap = 100000;
+        buf = new XY[cap];
+        bufHandle = GCHandle.Alloc(buf, GCHandleType.Pinned);
+        bufIntPtr = bufHandle.AddrOfPinnedObject();
+    }
+
+    public void Run()
+    {
+        DllLoader.Load(typeof(Dll));
+
+        int r = Dll.New();
+        Debug.Assert(r == 0);
+
+        r = Dll.InitBuf(bufIntPtr, cap);
+        Debug.Assert(r == 0);
+
+        r = Dll.InitFrameDelay(frameDelay);
+        Debug.Assert(r == 0);
+
+        r = Dll.Begin();
+        Debug.Assert(r == 0);
+
+        for (int i = 0; i < 10; i++)
+        {
+            r = Dll.Update(frameDelay);
+            Debug.Assert(r == 0);
+
+            r = Dll.Draw();
+            Debug.Assert(r > 0);
+
+            Console.WriteLine("draw return " + r);
+            for (int j = 0; j < r; j++)
+            {
+                Console.WriteLine(buf[j]);
+            }
+        }
+
+        r = Dll.End();
+        Debug.Assert(r == 0);
+
+        r = Dll.Delete();
+        Debug.Assert(r == 0);
+
+        DllLoader.Unload();
+    }
+
+    public void Dispose()
+    {
+        bufIntPtr = default;
+        bufHandle.Free();
+        buf = null;
+        cap = 0;
+    }
 }
 
-*/
-
-
-/************************************************************************************************************************/
-/************************************************************************************************************************/
-
-// invoke tests
-public static class MainClass {
-    public static void Main() {
-        Dll.LoadDll();
-
-        Console.WriteLine(Dll.Init());
-
-        Dll.UnloadDll();
+public static class MainClass
+{
+    public static void Main()
+    {
+        new Scene().Run();
     }
 }
