@@ -12,6 +12,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dll", "dll\dll.vcxproj", "{
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "shared", "shared\shared.vcxitems", "{857D29BD-74D7-44CA-BDDD-1917C2FE59F2}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "test2", "test2\test2.csproj", "{D80AB6C2-2730-45EE-AA92-42B0D459C309}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1CFAC3B5-DE3D-4BCC-B01D-18CEE91A7289} = {1CFAC3B5-DE3D-4BCC-B01D-18CEE91A7289}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -26,6 +31,10 @@ Global
 		{1CFAC3B5-DE3D-4BCC-B01D-18CEE91A7289}.Debug|x64.Build.0 = Debug|x64
 		{1CFAC3B5-DE3D-4BCC-B01D-18CEE91A7289}.Release|x64.ActiveCfg = Release|x64
 		{1CFAC3B5-DE3D-4BCC-B01D-18CEE91A7289}.Release|x64.Build.0 = Release|x64
+		{D80AB6C2-2730-45EE-AA92-42B0D459C309}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D80AB6C2-2730-45EE-AA92-42B0D459C309}.Debug|x64.Build.0 = Debug|Any CPU
+		{D80AB6C2-2730-45EE-AA92-42B0D459C309}.Release|x64.ActiveCfg = Release|Any CPU
+		{D80AB6C2-2730-45EE-AA92-42B0D459C309}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
