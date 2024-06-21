@@ -5,10 +5,11 @@ namespace Logic2 {
 
 	struct Monster {
 		XY pos;
+		void RndPos();
 	};
 
 	struct Scene {
-		xx::XY *drawBuf{};
+		XY *drawBuf{};
 		int drawBufCap{};
 
 		float timePool{}, frameDelay{};
@@ -21,6 +22,8 @@ namespace Logic2 {
 		// todo: init seed ?
 
 		int Begin();
+		xx::Task<> UpdateCore = UpdateCore_();
+		xx::Task<> UpdateCore_();
 		int Update(float delta);
 		int Draw();
 		int End();

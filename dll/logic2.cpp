@@ -7,7 +7,7 @@ namespace Logic2 {
         if (!buf || cap <= 0 || drawBuf || drawBufCap) {
             return -__LINE__;
         }
-        drawBuf = (xx::XY*)buf;
+        drawBuf = (XY*)buf;
         drawBufCap = cap;
         return 0;
     }
@@ -25,11 +25,24 @@ namespace Logic2 {
             return -__LINE__;
         }
 
-        for (int i = 0; i < 2; i++) {
-            monsters.Emplace().pos = {};
-        }
+        // todo
 
         return 0;
+    }
+
+    xx::Task<> Scene::UpdateCore_() {
+
+        for (int i = 0; i < 2000; i++) {
+            monsters.Emplace().RndPos();
+            co_yield 0;
+        }
+
+        while (true) {
+            monsters.ForeachFlags([this](Monster& m)->void {
+                m.RndPos();
+            });
+            co_yield 0;
+        }
     }
 
     int Scene::Update(float delta) {
@@ -37,11 +50,7 @@ namespace Logic2 {
         while (timePool >= frameDelay) {
             timePool -= frameDelay;
 
-            monsters.ForeachFlags([this](Monster& m)->void {
-                m.pos.x = rnd.Next<float>(-9.f, 9.f);
-                m.pos.y = rnd.Next<float>(-5.5f, 5.5f);
-            });
-
+            UpdateCore();
         }
         return 0;
     }
@@ -65,6 +74,11 @@ namespace Logic2 {
         });
 
         return idx;
+    }
+
+    void Monster::RndPos() {
+        pos.x = gScene->rnd.Next<float>(-9.f, 9.f);
+        pos.y = gScene->rnd.Next<float>(-5.5f, 5.5f);
     }
 
 }
