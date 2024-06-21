@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
@@ -24,44 +24,42 @@ public class NewBehaviourScript : MonoBehaviour
         bufHandle = GCHandle.Alloc(buf, GCHandleType.Pinned);
         bufIntPtr = bufHandle.AddrOfPinnedObject();
 
-        DllLoader.Load(typeof(Dll));
-
-        int r = Dll.New();
-        Debug.Assert(r == 0);
-
-        r = Dll.InitBuf(bufIntPtr, cap);
-        Debug.Assert(r == 0);
+        var r = Dll.InitBuf(bufIntPtr, cap);
+        Debug.Assert(r == 0, r);
 
         r = Dll.InitFrameDelay(frameDelay);
-        Debug.Assert(r == 0);
+        Debug.Assert(r == 0, r);
 
         r = Dll.Begin();
-        Debug.Assert(r == 0);
+        Debug.Assert(r == 0, r);
     }
 
 
     void Update()
     {
         int r = Dll.Update(frameDelay);
-        Debug.Assert(r == 0);
+        Debug.Assert(r == 0, r);
 
         r = Dll.Draw();
-        Debug.Assert(r > 0);
+        Debug.Assert(r > 0, r);
 
-        if (gos.Count < r)
+        var d = r - gos.Count;
+        if (d > 0)
         {
-            for (int i = 0; i < r - gos.Count; ++i)
+            for (int i = 0; i < d; ++i)
             {
                 gos.Add(Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity));
             }
+            Debug.Assert(r == gos.Count, $"r = {r} gos.Count = {gos.Count}");
         }
-        else if (gos.Count > r)
+        else if (d < 0)
         {
             for (int i = gos.Count - 1; i >= r; --i)
             {
                 Destroy(gos[i]);
             }
-            gos.RemoveRange(r, gos.Count - r);
+            gos.RemoveRange(r, -d);
+            Debug.Assert(r == gos.Count, $"r = {r} gos.Count = {gos.Count}");
         }
 
         for (int i = 0; i < r; i++)
@@ -73,22 +71,24 @@ public class NewBehaviourScript : MonoBehaviour
     void OnDestroy()
     {
         int r = Dll.End();
-        Debug.Assert(r == 0);
+        Debug.Assert(r == 0, r);
 
         bufIntPtr = default;
         bufHandle.Free();
         buf = null;
         cap = 0;
 
-        Dll.Delete();
+        r = Dll.Delete();
+        Debug.Assert(r == 0, r);
         DllLoader.Unload();
         Debug.Log("dll unloaded");
     }
 
     void Awake()
     {
-        DllLoader.Load(typeof(Dll));
-        Dll.New();
+        DllLoader.Load(typeof(Dll), "dll.dll");
+        var r = Dll.New();
+        Debug.Assert(r == 0);
         Debug.Log("dll loaded");
     }
 }

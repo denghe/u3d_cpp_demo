@@ -38,7 +38,7 @@ public static class Dll
 
 void Awake()
 {
-    DllLoader.Load(typeof(Dll));
+    DllLoader.Load(typeof(Dll), "dll.dll");
     Dll.New();
     Debug.Log("dll loaded");
 }
@@ -77,7 +77,7 @@ public static class DllLoader
 
     /*************************************************************************/
 
-    public static void Load(System.Type t)
+    public static void Load(System.Type t, string fileName = "dll.dll")
     {
         Debug.Assert(dllHandle == System.IntPtr.Zero);
 
@@ -91,7 +91,7 @@ public static class DllLoader
         "../../../../x64/Release/"
 #endif
 #endif
-         + "dll.dll");
+         + fileName);
 
         var fields = t.GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
 
