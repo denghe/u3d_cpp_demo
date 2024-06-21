@@ -83,7 +83,7 @@ public static class DllLoader
 
         dllHandle = LoadLibrary(
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-        Application.dataPath + "/Plugins/"
+        Application.dataPath + "/Plugins/x86_64/"
 #else
 #if DEBUG
         "../../../../x64/Debug/"

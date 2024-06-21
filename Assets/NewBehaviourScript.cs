@@ -1,25 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class NewBehaviourScript : MonoBehaviour
 {
     public GameObject prefab;
+    //public Texture2D tex;
 
     private const float fps = 60;
     private const float frameDelay = 1.0f / fps;
     private int cap;
     private XY[] buf;
     private GCHandle bufHandle;
-    private IntPtr bufIntPtr;
+    private System.IntPtr bufIntPtr;
 
     private List<GameObject> gos = new List<GameObject>();
 
     void Start()
     {
         Debug.Assert(prefab != null);
-        cap = 100000;
+        cap = 50000;
         buf = new XY[cap];
         bufHandle = GCHandle.Alloc(buf, GCHandleType.Pinned);
         bufIntPtr = bufHandle.AddrOfPinnedObject();
@@ -32,6 +32,15 @@ public class NewBehaviourScript : MonoBehaviour
 
         r = Dll.Begin();
         Debug.Assert(r == 0, r);
+
+        //for (int i = 0; i < 100000; i++)
+        //{
+        //    //var go = new GameObject();
+        //    //go.AddComponent<SpriteRenderer>().sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+        //    //gos.Add(go);
+
+        //    gos.Add(Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity));
+        //}
     }
 
 
@@ -46,6 +55,7 @@ public class NewBehaviourScript : MonoBehaviour
         var d = r - gos.Count;
         if (d > 0)
         {
+            gos.Capacity = d;
             for (int i = 0; i < d; ++i)
             {
                 gos.Add(Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity));
@@ -66,6 +76,13 @@ public class NewBehaviourScript : MonoBehaviour
         {
             gos[i].GetComponent<Transform>().position = new Vector3(buf[i].x, buf[i].y, 0);
         }
+
+        //for (int i = 0; i < gos.Count; i++)
+        //{
+        //    var x = Random.Range(-9f, 9f);
+        //    var y = Random.Range(-6f, 6f);
+        //    gos[i].GetComponent<Transform>().position = new Vector3(x, y, 0);
+        //}
     }
 
     void OnDestroy()
