@@ -25,18 +25,16 @@ namespace Logic2 {
             return -__LINE__;
         }
 
-        // todo
+        monsters.Clear();
+        monsters.Reserve(drawBufCap);
+        for (int i = 0; i < drawBufCap; i++) {
+            monsters.Emplace().RndPos();
+        }
 
         return 0;
     }
 
     xx::Task<> Scene::UpdateCore_() {
-
-        for (int i = 0; i < 2000; i++) {
-            monsters.Emplace().RndPos();
-            co_yield 0;
-        }
-
         while (true) {
             monsters.ForeachFlags([this](Monster& m)->void {
                 m.RndPos();
