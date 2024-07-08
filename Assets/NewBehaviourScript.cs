@@ -55,7 +55,7 @@ public class NewBehaviourScript : MonoBehaviour
         var d = r - gos.Count;
         if (d > 0)
         {
-            gos.Capacity = d;
+            //gos.Capacity = d;
             for (int i = 0; i < d; ++i)
             {
                 gos.Add(Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity));
